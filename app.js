@@ -2,6 +2,8 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const { errors } = require('celebrate'); // библиотека для валидации данных
+const helmet = require('helmet');
+// const cors = require('cors');
 const { DB_ADDRESS } = require('./config');
 
 // создаем приложение
@@ -12,6 +14,14 @@ const { PORT = 3000 } = process.env;
 mongoose.connect(DB_ADDRESS, {
   autoIndex: true,
 });
+
+// запросы только с нашего сайта
+// app.use(cors({ origin: 'http://localhost:3000' })); !!!!!!!!!!!!!!! ??
+
+// мидлвар переваривания информации
+app.use(express.json());
+// Use Helmet!
+app.use(helmet());
 
 // обработчики ошибок
 app.use(errors()); // обработчик ошибок celebrate
