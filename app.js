@@ -4,7 +4,14 @@ const mongoose = require('mongoose');
 const { errors } = require('celebrate'); // библиотека для валидации данных
 const helmet = require('helmet');
 // const cors = require('cors');
+const rateLimit = require('express-rate-limit');
 const { DB_ADDRESS } = require('./config');
+const router = require('./routes');
+
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // за 15 минут
+  max: 100, // можно совершить максимум 100 запросов с одного IP
+});
 
 // создаем приложение
 const app = express();
@@ -18,26 +25,18 @@ mongoose.connect(DB_ADDRESS, {
 // запросы только с нашего сайта
 // app.use(cors({ origin: 'http://localhost:3000' })); !!!!!!!!!!!!!!! ??
 
-// мидлвар переваривания информации
-app.use(express.json());
-// Use Helmet!
-app.use(helmet());
+app.use(express.json()); // мидлвар переваривания информации
+app.use(helmet()); // защита
+
+app.use(limiter); // подключаем rate-limiter
+app.use(router); // роуты
 
 // обработчики ошибок
 app.use(errors()); // обработчик ошибок celebrate
 
-// наш централизованный обработчик
-app.use((err, req, res, next) => {
-  const { statusCode = 500, message } = err;
-  res
-    .status(err.statusCode)
-    .send({
-      message: statusCode === 500
-        ? 'Произошла ошибка на сервере'
-        : message,
-    });
-  next();
-});
+const errorCode = require('./middlewares/errorCode'); // централизованный обработчик ошибок
+
+app.use(errorCode);
 
 // запуск сервера
 app.listen(PORT, () => {

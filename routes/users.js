@@ -5,7 +5,10 @@ const {
   getCurrentUser,
 } = require('../controllers/users');
 
+// запрос пользователя
 router.get('/me', getCurrentUser);
+
+// запрос на редактирование пользователя
 router.patch('/me', celebrate({
   body: Joi.object().keys({
     name: Joi.string().min(2).max(30),
