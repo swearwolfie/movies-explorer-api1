@@ -5,6 +5,7 @@ const { errors } = require('celebrate'); // библиотека для вали
 const helmet = require('helmet');
 // const cors = require('cors');
 const rateLimit = require('express-rate-limit');
+const { requestLogger, errorLogger } = require('./middlewares/logger');
 const { DB_ADDRESS } = require('./config');
 const router = require('./routes');
 
@@ -27,11 +28,13 @@ mongoose.connect(DB_ADDRESS, {
 
 app.use(express.json()); // мидлвар переваривания информации
 app.use(helmet()); // защита
+app.use(requestLogger); // подключаем логгер запросов (в самом начале)
 
 app.use(limiter); // подключаем rate-limiter
 app.use(router); // роуты
 
 // обработчики ошибок
+app.use(errorLogger); // подключаем логгер ошибок (после всего, но перед ошибками)
 app.use(errors()); // обработчик ошибок celebrate
 
 const errorCode = require('./middlewares/errorCode'); // централизованный обработчик ошибок
