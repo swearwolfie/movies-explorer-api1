@@ -23,7 +23,7 @@ module.exports.createUser = (req, res, next) => {
     }))
     .then((user) => res.status(created).send({ data: user }))
     .catch((err) => {
-      if (err.name === 'ValidationError') {
+      if (err.name === 'Validation Error') {
         next(new BadRequestError('Переданы некорректные данные'));
       } else if (err.code === 11000) {
         next(new ConflictError('Такой пользователь уже существует, амиго'));
@@ -71,7 +71,7 @@ module.exports.changeUser = (req, res, next) => {
     req.user._id,
     {
       name: req.body.name,
-      about: req.body.about,
+      email: req.body.email,
     },
     {
       new: true,

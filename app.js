@@ -45,3 +45,18 @@ app.use(errorCode);
 app.listen(PORT, () => {
   console.log(`HELLO ITS ME MARIO AT PORT ${PORT}`);
 });
+
+//
+/* {
+  "name": "Kate Biship",
+  "email": "katiekatie@gmail.com",
+  "password": "1234567890"
+} */
+
+/*
+{
+  "name": "Miles Morales",
+  "email": "babymiles@gmail.com",
+  "password": "1234567890"
+}
+*/

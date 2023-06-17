@@ -1,5 +1,7 @@
 const mongoose = require('mongoose');
 // const validator = require('validator');
+// country, director, duration, year, description, image,
+// trailer, nameRU, nameEN и thumbnail, movieId
 
 const movieSchema = new mongoose.Schema({
   country: {
@@ -32,7 +34,7 @@ const movieSchema = new mongoose.Schema({
     },
     required: true,
   },
-  trailerLink: {
+  trailer: {
     type: String, // ссылка — это строка
     validate: {
       validator(v) {
@@ -40,6 +42,14 @@ const movieSchema = new mongoose.Schema({
       },
       message: 'Некорректная ссылка',
     },
+    required: true,
+  },
+  nameRU: {
+    type: String,
+    required: true,
+  },
+  nameEN: {
+    type: String,
     required: true,
   },
   thumbnail: {
@@ -57,18 +67,10 @@ const movieSchema = new mongoose.Schema({
     ref: 'user',
     required: true,
   },
-  movieId: {
+  /* movieId: {
     type: Number,
     required: true,
-  },
-  nameRU: {
-    type: String,
-    required: true,
-  },
-  nameEN: {
-    type: String,
-    required: true,
-  },
+  }, */
 });
 
 module.exports = mongoose.model('movie', movieSchema);
