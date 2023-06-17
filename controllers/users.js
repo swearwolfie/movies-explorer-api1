@@ -2,7 +2,7 @@ const bcrypt = require('bcrypt'); // импортируем bcrypt для хэш
 const token = require('jsonwebtoken'); // импортируем модуль jsonwebtoken для создания токена
 const User = require('../models/user');
 const NotFoundError = require('../errors/not-found-err');
-const { created } = require('../utils/constants');
+const { created, success } = require('../utils/constants');
 const ConflictError = require('../errors/confl-err');
 const BadRequestError = require('../errors/bad-req-err');
 const { JWT_SECRET } = require('../config');
@@ -50,5 +50,43 @@ module.exports.authorize = (req, res, next) => {
     .catch(next);
 };
 
-module.exports.getCurrentUser = () => {};
-module.exports.changeUser = () => {};
+// users/me
+module.exports.getCurrentUser = (req, res, next) => {
+  User.findById(req.user._id)
+    .then((user) => {
+      if (user === null) {
+        next(NotFoundError('Пользовать не найден'));
+      }
+      return res.status(success).send({ data: user });
+    })
+    .catch((err) => {
+      if (err.name === 'CastError') {
+        next(new BadRequestError('Переданы некорректные данные'));
+      } return next(err);
+    });
+};
+
+module.exports.changeUser = (req, res, next) => {
+  User.findByIdAndUpdate(
+    req.user._id,
+    {
+      name: req.body.name,
+      about: req.body.about,
+    },
+    {
+      new: true,
+      runValidators: true,
+    },
+  )
+    .then((user) => {
+      if (user === null) {
+        next(NotFoundError('Пользовать не найден'));
+      }
+      return res.status(success).send({ data: user });
+    })
+    .catch((err) => {
+      if (err.name === 'ValidationError') {
+        next(new BadRequestError('Переданы некорректные данные для обновления профиля'));
+      } else next(err);
+    });
+};

@@ -28,3 +28,5 @@ router.use('/movies', auth, require('./movies'));
 router.use('*', auth, (req, res, next) => {
   next(new NotFound('Такой страницы не существует'));
 });
+
+module.exports = router;
