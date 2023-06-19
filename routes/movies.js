@@ -20,6 +20,7 @@ router.post('/', celebrate({
     nameRU: Joi.string().min(2).max(60),
     nameEN: Joi.string().min(2).max(60),
     thumbnail: Joi.string().regex(/^(https?:\/\/(www\.)?([a-zA-z0-9-]){1,}\.?([a-zA-z0-9]){2,8}(\/?([a-zA-z0-9-])*\/?)*\/?([-._~:/?#[]@!\$&'\(\)\*\+,;=])*)/).required(),
+    movieId: Joi.number(),
   }),
 }), createMovie);
 router.get('/', getMovies);
@@ -40,6 +41,7 @@ module.exports = router;
   "trailer": "https://www.youtube.com/watch?v=cqGjhVJWtEg",
   "nameRU": "Человек-паук: Паутина вселенных",
   "nameEN": "Spider-Man: Across the Spider-Verse",
-  "thumbnail": "https://upload.wikimedia.org/wikipedia/en/b/b4/Spider-Man-_Across_the_Spider-Verse_poster.jpg"
+  "thumbnail": "https://upload.wikimedia.org/wikipedia/en/b/b4/Spider-Man-_Across_the_Spider-Verse_poster.jpg",
+  "movieId": 7
 }
 */

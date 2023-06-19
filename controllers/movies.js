@@ -7,38 +7,15 @@ const BadRequestError = require('../errors/bad-req-err');
 const ForbiddenError = require('../errors/forbd-err');
 
 module.exports.createMovie = (req, res, next) => {
-  const {
-    country,
-    director,
-    duration,
-    year,
-    description,
-    image,
-    trailer,
-    nameRU,
-    nameEN,
-    thumbnail,
-  } = req.body;
   const owner = req.user._id;
-  Movie.create({
-    country,
-    director,
-    duration,
-    year,
-    description,
-    image,
-    trailer,
-    nameRU,
-    nameEN,
-    thumbnail,
-    owner,
-  })
-    .then((movie) => res.status(created).send({ data: movie }))
+  Movie.create({ owner, ...req.body })
+    .then((movie) => {
+      res.status(created).send({ data: movie });
+    })
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        next(new BadRequestError('Переданы некорректные данные при создании фильма'));
-      }
-      next(err);
+        throw new BadRequestError('Переданы некорректные данные при создании фильма');
+      } next(err);
     });
 };
 
@@ -49,21 +26,23 @@ module.exports.getMovies = (req, res) => {
 };
 
 module.exports.deleteMovie = (req, res, next) => {
-  // console.log(req.params, 'isabella dances', req.params.movieID);
-  // console.log(req.body, 'twisting like a rubiks cube', req.body.owner);
-  Movie.findByIdAndDelete(req.params)
+  const owner = req.user._id;
+  const { movieId } = req.params;
+
+  Movie.findById(movieId)
     .then((movie) => {
       if (movie === null) {
-        next(new NotFoundError('Фильм по указанному _id не найден.'));
+        throw new NotFoundError('Фильм по указанному _id не найден.');
       }
-      if (movie.owner.toString() !== req.user._id) {
-        next(new ForbiddenError('Нельзя удалить чужой фильм'));
+      if (movie.owner.toString() !== owner) {
+        throw new ForbiddenError('Нельзя удалить чужой фильм');
+      } else {
+        Movie.findByIdAndDelete(movieId)
+          .then((film) => {
+            res.status(success).send({ data: film });
+          })
+          .catch(next);
       }
-      return res.status(success).send({ data: movie });
     })
-    .catch((err) => {
-      if (err.name === 'CastError') {
-        next(new BadRequestError('Переданы некорректные данные'));
-      } else next(err);
-    });
+    .catch(next);
 };

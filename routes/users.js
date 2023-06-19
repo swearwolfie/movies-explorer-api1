@@ -17,3 +17,18 @@ router.patch('/me', celebrate({
 }), changeUser);
 
 module.exports = router;
+
+//
+/* {
+  "name": "Kate Biship",
+  "email": "ladyladykatiekatie@gmail.com",
+  "password": "1234567890"
+} */
+
+/*
+{
+  "name": "Miles Morales",
+  "email": "babymiles@gmail.com",
+  "password": "1234567890"
+}
+*/
