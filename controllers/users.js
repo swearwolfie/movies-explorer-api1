@@ -23,7 +23,7 @@ module.exports.createUser = (req, res, next) => {
     }))
     .then((user) => res.status(created).send({ data: user }))
     .catch((err) => {
-      if (err.name === 'Validation Error') {
+      if (err.name === 'ValidationError') {
         next(new BadRequestError('Переданы некорректные данные'));
       } else if (err.code === 11000) {
         next(new ConflictError('Такой пользователь уже существует, амиго'));
@@ -35,12 +35,12 @@ module.exports.authorize = (req, res, next) => {
   const { email, password } = req.body;
   User.findOne({ email }).select('+password') // дополнение для оверрайда select'а в схеме
     .orFail(() => {
-      next(NotFoundError('Пользовать не найден'));
+      next(new NotFoundError('Пользовать не найден'));
     })
     .then((user) => bcrypt.compare(password, user.password).then((matched) => {
       if (matched) {
         return user;
-      } return next(NotFoundError('Пользовать не найден')); // ошибка на несовпадение пароля
+      } return next(new NotFoundError('Переданы некорректные данные')); // ошибка на несовпадение пароля
     }))
     .then((user) => {
       // создадим токен
@@ -55,7 +55,7 @@ module.exports.getCurrentUser = (req, res, next) => {
   User.findById(req.user._id)
     .then((user) => {
       if (user === null) {
-        next(NotFoundError('Пользовать не найден'));
+        next(new NotFoundError('Пользовать не найден'));
       }
       return res.status(success).send({ data: user });
     })
@@ -80,7 +80,7 @@ module.exports.changeUser = (req, res, next) => {
   )
     .then((user) => {
       if (user === null) {
-        next(NotFoundError('Пользовать не найден'));
+        next(new NotFoundError('Пользовать не найден'));
       }
       return res.status(success).send({ data: user });
     })

@@ -21,7 +21,7 @@ module.exports = router;
 //
 /* {
   "name": "Kate Biship",
-  "email": "ladyladykatiekatie@gmail.com",
+  "email": "katiekatie@gmail.com",
   "password": "1234567890"
 } */
 
