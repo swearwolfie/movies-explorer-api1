@@ -67,7 +67,7 @@ app.use(router); // роуты
 app.use(errorLogger); // подключаем логгер ошибок (после всего, но перед ошибками)
 app.use(errors()); // обработчик ошибок celebrate
 
-const errorCode = require('./middlewares/errorCode'); // централизованный обработчик ошибок
+const { errorCode } = require('./middlewares/errorCode'); // централизованный обработчик ошибок
 
 app.use(errorCode);
 
