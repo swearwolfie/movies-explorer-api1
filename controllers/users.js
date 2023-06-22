@@ -5,8 +5,7 @@ const NotFoundError = require('../errors/not-found-err');
 const { created, success } = require('../utils/constants');
 const ConflictError = require('../errors/confl-err');
 const BadRequestError = require('../errors/bad-req-err');
-const { JWT_SECRET } = require('../config');
-// const { JWT_SECRET, NODE_ENV } = require('../config');
+const { JWT_SECRET /* NODE_ENV */ } = require('../config');
 
 module.exports.createUser = (req, res, next) => {
   const
