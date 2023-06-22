@@ -1,5 +1,5 @@
 // наш централизованный обработчик
-module.exports = ((err, req, res, next) => {
+module.exports.errorCode = ((err, req, res, next) => {
   const { statusCode = 500, message } = err;
   res
     .status(err.statusCode)

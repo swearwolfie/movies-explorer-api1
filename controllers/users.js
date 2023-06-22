@@ -5,7 +5,7 @@ const NotFoundError = require('../errors/not-found-err');
 const { created, success } = require('../utils/constants');
 const ConflictError = require('../errors/confl-err');
 const BadRequestError = require('../errors/bad-req-err');
-const { JWT_SECRET /* NODE_ENV */ } = require('../config');
+const { JWT_SECRET, NODE_ENV } = require('../config');
 
 module.exports.createUser = (req, res, next) => {
   const
@@ -43,7 +43,7 @@ module.exports.authorize = (req, res, next) => {
     }))
     .then((user) => {
       // создадим токен
-      const jwt = token.sign({ _id: user._id }, /* NODE_ENV === 'production' ? JWT_SECRET : 'dev-secret', */ JWT_SECRET, { expiresIn: '7d' });
+      const jwt = token.sign({ _id: user._id }, NODE_ENV === 'production' ? JWT_SECRET : 'dev-secret', { expiresIn: '7d' });
       res.send({ jwt }); // вернём токен
     })
     .catch(next);
